@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import confetti from 'canvas-confetti';
+import img1 from "./assets/Images/4.jpg"
+import img2 from "./assets/Images/3.jpeg"
+import img3 from "./assets/Images/2.jpeg"
+import img4 from "./assets/Images/1.jpeg"
 import {
   Heart,
   Music,
@@ -578,22 +582,22 @@ export default function App(): React.JSX.Element {
 
   const galleryItems = [
     {
-      url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
+      img: img4,
       caption:
         'Where our hearts connected...',
     },
     {
-      url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80',
+      img: img2,
       caption:
         'Precious Childhood Memories',
     },
     {
-      url: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80',
+      img: img3,
       caption:
         'Growing up together in love',
     },
     {
-      url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80',
+      img: img1,
       caption:
         'Our Forever Chapter',
     },
@@ -1527,7 +1531,7 @@ export default function App(): React.JSX.Element {
                         >
                           <div className="overflow-hidden rounded-2xl mb-3">
                             <img
-                              src={item.url}
+                              src={item.img}
                               alt={item.caption}
                               loading="lazy"
                               className="w-full h-64 sm:h-72 md:h-64 object-cover group-hover:scale-110 transition duration-700"
