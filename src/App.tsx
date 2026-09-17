@@ -102,9 +102,9 @@ const GoldText = styled.span<{ isBride: boolean }>`
   text-shadow:
     0 2px 10px
       ${props =>
-        props.isBride
-          ? 'rgba(243, 198, 223, 0.3)'
-          : 'rgba(212, 175, 55, 0.4)'};
+    props.isBride
+      ? 'rgba(243, 198, 223, 0.3)'
+      : 'rgba(212, 175, 55, 0.4)'};
 `;
 
 const GlassCard = styled.div`
@@ -331,13 +331,13 @@ export default function App(): React.JSX.Element {
         setTimeLeft({
           days: Math.floor(
             difference /
-              (1000 * 60 * 60 * 24)
+            (1000 * 60 * 60 * 24)
           ),
 
           hours: Math.floor(
             (difference /
               (1000 * 60 * 60)) %
-              24
+            24
           ),
 
           minutes: Math.floor(
@@ -368,21 +368,21 @@ export default function App(): React.JSX.Element {
 
   const theme = isBride
     ? {
-        bgMain: '#fff8fa',
-        bgSection: '#fff5f8',
-        primaryColor: '#d87093',
-        accentPink: '#ffb6c1',
-        cardBg: '#fff0f5',
-        textDark: '#501525',
-      }
+      bgMain: '#fff8fa',
+      bgSection: '#fff5f8',
+      primaryColor: '#d87093',
+      accentPink: '#ffb6c1',
+      cardBg: '#fff0f5',
+      textDark: '#501525',
+    }
     : {
-        bgMain: '#f9f9fb',
-        bgSection: '#f2f2f5',
-        primaryColor: '#2b2b2b',
-        accentPink: '#d4af37',
-        cardBg: '#ffffff',
-        textDark: '#1a1a1a',
-      };
+      bgMain: '#f9f9fb',
+      bgSection: '#f2f2f5',
+      primaryColor: '#2b2b2b',
+      accentPink: '#d4af37',
+      cardBg: '#ffffff',
+      textDark: '#1a1a1a',
+    };
 
   const handleSelectSide = (
     side: 'groom' | 'bride'
@@ -428,18 +428,18 @@ export default function App(): React.JSX.Element {
       colors:
         side === 'bride'
           ? [
-              '#ffb6c1',
-              '#d4af37',
-              '#ffffff',
-              '#ff69b4',
-              '#fff0f5',
-            ]
+            '#ffb6c1',
+            '#d4af37',
+            '#ffffff',
+            '#ff69b4',
+            '#fff0f5',
+          ]
           : [
-              '#2b2b2b',
-              '#d4af37',
-              '#ffffff',
-              '#708090',
-            ],
+            '#2b2b2b',
+            '#d4af37',
+            '#ffffff',
+            '#708090',
+          ],
     });
   };
 
@@ -865,7 +865,7 @@ export default function App(): React.JSX.Element {
                   ].map((unit, idx) => {
                     const val =
                       timeLeft[
-                        unit as keyof TimeLeft
+                      unit as keyof TimeLeft
                       ];
 
                     return (
@@ -1046,11 +1046,10 @@ export default function App(): React.JSX.Element {
                           return (
                             <div
                               key={i}
-                              className={`py-1.5 sm:py-2 transition flex items-center justify-center ${
-                                isSpecialDay
-                                  ? 'font-bold scale-110'
-                                  : 'text-gray-700'
-                              }`}
+                              className={`py-1.5 sm:py-2 transition flex items-center justify-center ${isSpecialDay
+                                ? 'font-bold scale-110'
+                                : 'text-gray-700'
+                                }`}
                             >
                               {isSpecialDay ? (
                                 <div className="relative flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9">
@@ -1487,16 +1486,15 @@ export default function App(): React.JSX.Element {
           </FadeInSection>
 
           {/* GALLERY */}
-
           <FadeInSection direction="up">
             <section className="py-12 sm:py-20 bg-white">
               <div className="max-w-6xl mx-auto px-4 text-center">
+
+                {/* Gallery Title */}
                 <div
                   className="flex items-center justify-center gap-2 mb-2"
                   style={{
-                    color: isBride
-                      ? '#d87093'
-                      : '#d4af37',
+                    color: isBride ? "#d87093" : "#d4af37",
                   }}
                 >
                   <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -1506,50 +1504,64 @@ export default function App(): React.JSX.Element {
                   </h3>
                 </div>
 
+                {/* Gallery Description */}
                 <p className="text-gray-500 mb-8 sm:mb-12 text-xs sm:text-base px-2">
                   Sweet childhood memories and wonderful moments leading to forever.
                 </p>
 
+                {/* Gallery Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-                  {galleryItems.map(
-                    (item, index) => (
-                      <FadeInSection
-                        key={index}
-                        direction="scale"
-                        delay={index * 100}
-                      >
-                        <div
-                          className="p-3 rounded-3xl shadow-xl border group overflow-hidden h-full flex flex-col justify-between"
-                          style={{
-                            backgroundColor:
-                              theme.cardBg,
-                            borderColor:
-                              isBride
-                                ? 'rgba(255,182,193,0.3)'
-                                : 'rgba(212,175,55,0.3)',
-                          }}
-                        >
-                          <div className="overflow-hidden rounded-2xl mb-3">
-                            <img
-                              src={item.img}
-                              alt={item.caption}
-                              loading="lazy"
-                              className="w-full h-64 sm:h-72 md:h-64 object-cover group-hover:scale-110 transition duration-700"
-                            />
-                          </div>
 
-                          <p className="text-gray-700 font-serif text-sm pb-2 font-medium">
-                            {item.caption}
-                          </p>
+                  {galleryItems.map((item, index) => (
+                    <FadeInSection
+                      key={index}
+                      direction="scale"
+                      delay={index * 100}
+                    >
+                      {/* Image Card */}
+                      <div
+                        className="p-3 rounded-3xl shadow-xl border group overflow-hidden h-full flex flex-col justify-between"
+                        style={{
+                          backgroundColor: theme.cardBg,
+                          borderColor: isBride
+                            ? "rgba(255,182,193,0.3)"
+                            : "rgba(212,175,55,0.3)",
+                        }}
+                      >
+
+                        {/* Image Container */}
+                        <div
+                          className={`overflow-hidden rounded-2xl mb-3 ${index === galleryItems.length - 1
+                              ? "aspect-[3/4]"
+                              : ""
+                            }`}
+                        >
+
+                          <img
+                            src={item.img}
+                            alt={item.caption}
+                            loading="lazy"
+                            className={`w-full rounded-2xl group-hover:scale-105 transition duration-700 ${index === galleryItems.length - 1
+                                ? "h-full object-cover"
+                                : "h-auto object-contain"
+                              }`}
+                          />
+
                         </div>
-                      </FadeInSection>
-                    )
-                  )}
+
+                        {/* Image Caption */}
+                        <p className="text-gray-700 font-serif text-sm pb-2 font-medium">
+                          {item.caption}
+                        </p>
+
+                      </div>
+                    </FadeInSection>
+                  ))}
+
                 </div>
               </div>
             </section>
           </FadeInSection>
-
           {/* FOOTER */}
 
           <footer
