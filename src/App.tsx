@@ -1119,7 +1119,7 @@ export default function App(): React.JSX.Element {
                   </div>
 
                   <a
-                    href="https://maps.google.com/?q=Nile+Corniche+Imbaba+Giza"
+                    href="https://maps.app.goo.gl/V28MLmxhNtpiEGyb7"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full py-3.5 text-white font-bold rounded-2xl text-center shadow-lg transition block tracking-wide uppercase text-[10px] sm:text-xs"
