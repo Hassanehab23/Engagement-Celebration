@@ -5,6 +5,7 @@ import img1 from "./assets/Images/4.jpg"
 import img2 from "./assets/Images/3.jpeg"
 import img3 from "./assets/Images/2.jpeg"
 import img4 from "./assets/Images/1.jpeg"
+import AutoScroll from './Components/AutoScroll';
 import {
   Heart,
   Music,
@@ -31,6 +32,18 @@ interface Wish {
   message: string;
   date: string;
 }
+
+const autoScrollSectionIds = [
+  'hero',
+  'countdown',
+  'invitation',
+  'location',
+  'story-timeline',
+  'rsvp',
+  'wishes-wall',
+  'gallery',
+  'footer',
+];
 
 const HeroSection = styled.div<{ isBride: boolean }>`
   background:
@@ -676,6 +689,13 @@ export default function App(): React.JSX.Element {
 
       {isOpen && (
         <>
+          <AutoScroll
+            active={guestSide !== null}
+            sectionIds={autoScrollSectionIds}
+            delayMs={8000}
+            loop
+          />
+
           <button
             onClick={toggleMusic}
             className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-45 p-3 sm:p-4 rounded-full shadow-2xl transition-all duration-300 flex items-center justify-center cursor-pointer hover:scale-110 border border-white/40"
@@ -719,7 +739,7 @@ export default function App(): React.JSX.Element {
         <>
           {/* HERO */}
 
-          <HeroSection isBride={isBride}>
+          <HeroSection id="hero" isBride={isBride}>
             <BackgroundWatermarkText>
               FOREVER
             </BackgroundWatermarkText>
@@ -837,7 +857,7 @@ export default function App(): React.JSX.Element {
           {/* COUNTDOWN */}
 
           <FadeInSection direction="up">
-            <section className="py-12 sm:py-20 bg-white text-center">
+            <section id="countdown" className="py-12 sm:py-20 bg-white text-center">
               <div className="max-w-4xl mx-auto px-4">
                 <FadeInSection direction="down">
                   <span
@@ -911,6 +931,7 @@ export default function App(): React.JSX.Element {
           {/* EVENT DETAILS */}
 
           <section
+            id="invitation"
             className="py-12 sm:py-20 overflow-hidden"
             style={{
               backgroundColor: theme.bgSection,
@@ -923,7 +944,7 @@ export default function App(): React.JSX.Element {
                 direction="right"
                 delay={100}
               >
-                <LuxuryGoldCard className="flex flex-col justify-between h-full">
+                <LuxuryGoldCard id="location" className="flex flex-col justify-between h-full">
                   <div>
                     <div
                       className="flex items-center gap-3 mb-5 sm:mb-6"
@@ -1138,7 +1159,7 @@ export default function App(): React.JSX.Element {
           {/* DRESS CODE */}
 
           <FadeInSection direction="up">
-            <section className="py-12 sm:py-20 bg-white text-center">
+            <section id="story-timeline" className="py-12 sm:py-20 bg-white text-center">
               <div className="max-w-4xl mx-auto px-4">
                 <div
                   className="flex items-center justify-center gap-2 mb-2"
@@ -1252,6 +1273,7 @@ export default function App(): React.JSX.Element {
 
           <FadeInSection direction="up">
             <section
+              id="rsvp"
               className="py-12 sm:py-20 text-center"
               style={{
                 backgroundColor: theme.bgMain,
@@ -1349,6 +1371,7 @@ export default function App(): React.JSX.Element {
 
           <FadeInSection direction="up">
             <section
+              id="wishes-wall"
               className="py-12 sm:py-20"
               style={{
                 backgroundColor:
@@ -1487,7 +1510,7 @@ export default function App(): React.JSX.Element {
 
           {/* GALLERY */}
           <FadeInSection direction="up">
-            <section className="py-12 sm:py-20 bg-white">
+            <section id="gallery" className="py-12 sm:py-20 bg-white">
               <div className="max-w-6xl mx-auto px-4 text-center">
 
                 {/* Gallery Title */}
@@ -1565,6 +1588,7 @@ export default function App(): React.JSX.Element {
           {/* FOOTER */}
 
           <footer
+            id="footer"
             className="py-6 text-center border-t transition-colors duration-500"
             style={{
               backgroundColor: isBride
