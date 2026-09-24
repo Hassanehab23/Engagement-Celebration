@@ -1301,57 +1301,54 @@ export default function App(): React.JSX.Element {
                 </p>
 
 <form
-                  onSubmit={(e) => e.preventDefault()}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!guestName.trim()) {
+                      alert('Please enter your full name first!');
+                      return;
+                    }
+
+                    const phone = isBride ? '201286993480' : '201062287123';
+                    const text = encodeURIComponent(
+                      `Hello! I am ${guestName} (${isBride ? "Bride's Side" : "Groom's Side"}), and I am delighted to confirm my attendance at Mohamed & Nada's engagement party! 💍✨`
+                    );
+
+                    // استخدام رابط الويب المباشر api.whatsapp.com لأنه بيتفتح أسهل بكتير على الآيفون
+                    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${text}`;
+
+                    setRsvpStatus(`Thank you, ${guestName}! Redirecting to WhatsApp...`);
+                    
+                    confetti({
+                      particleCount: 80,
+                      spread: 70,
+                      origin: { y: 0.8 },
+                      colors: isBride ? ['#ffb6c1', '#d4af37'] : ['#2b2b2b', '#d4af37'],
+                    });
+
+                    // الطريقة الأضمن للآيفون والأندرويد معا
+                    window.location.href = whatsappUrl;
+                  }}
                   className="space-y-4"
                 >
                   <input
                     type="text"
                     placeholder="Enter Your Full Name"
                     value={guestName}
-                    onChange={e =>
-                      setGuestName(
-                        e.target.value
-                      )
-                    }
+                    onChange={e => setGuestName(e.target.value)}
                     className="w-full px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl border focus:outline-none text-center text-base sm:text-lg bg-white shadow-sm"
                     style={{
-                      borderColor: isBride
-                        ? '#ffb6c1'
-                        : '#d4af37',
+                      borderColor: isBride ? '#ffb6c1' : '#d4af37',
                     }}
                     required
                   />
 
-                  <a
-                    href={
-                      guestName.trim()
-                        ? `https://wa.me/${isBride ? '201286993480' : '201062287123'}?text=${encodeURIComponent(
-                            `Hello! I am ${guestName} (${isBride ? "Bride's Side" : "Groom's Side"}), and I am delighted to confirm my attendance at Mohamed & Nada's engagement party! 💍✨`
-                          )}`
-                        : '#'
-                    }
-                    target="_self"
-                    rel="noopener noreferrer"
-                    onClick={(e) => {
-                      if (!guestName.trim()) {
-                        e.preventDefault();
-                        alert('Please enter your full name first!');
-                      } else {
-                        setRsvpStatus(`Thank you, ${guestName}! Opening WhatsApp...`);
-                        confetti({
-                          particleCount: 80,
-                          spread: 70,
-                          origin: { y: 0.8 },
-                          colors: isBride ? ['#ffb6c1', '#d4af37'] : ['#2b2b2b', '#d4af37'],
-                        });
-                      }
-                    }}
-                    className="w-full py-3.5 sm:py-4 bg-[#25D366] text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition flex items-center justify-center gap-2 cursor-pointer uppercase text-[10px] sm:text-xs tracking-widest block text-center"
+                  <button
+                    type="submit"
+                    className="w-full py-3.5 sm:py-4 bg-[#25D366] text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition flex items-center justify-center gap-2 cursor-pointer uppercase text-[10px] sm:text-xs tracking-widest"
                   >
                     <Send className="w-4 h-4" />
-
                     Confirm via WhatsApp
-                  </a>
+                  </button>
                 </form>
 
 
