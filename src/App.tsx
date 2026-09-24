@@ -1301,7 +1301,7 @@ export default function App(): React.JSX.Element {
                 </p>
 
 <form
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
                     if (!guestName.trim()) {
                       alert('Please enter your full name first!');
@@ -1309,14 +1309,11 @@ export default function App(): React.JSX.Element {
                     }
 
                     const phone = isBride ? '201286993480' : '201062287123';
-                    const text = encodeURIComponent(
-                      `Hello! I am ${guestName} (${isBride ? "Bride's Side" : "Groom's Side"}), and I am delighted to confirm my attendance at Mohamed & Nada's engagement party! 💍✨`
-                    );
+                    const text = `Hello! I am ${guestName} (${isBride ? "Bride's Side" : "Groom's Side"}), and I am delighted to confirm my attendance at Mohamed & Nada's engagement party! 💍✨`;
+                    
+                    const waUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`;
 
-                    // استخدام رابط الويب المباشر api.whatsapp.com لأنه بيتفتح أسهل بكتير على الآيفون
-                    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${text}`;
-
-                    setRsvpStatus(`Thank you, ${guestName}! Redirecting to WhatsApp...`);
+                    setRsvpStatus(`Thank you, ${guestName}! Opening WhatsApp...`);
                     
                     confetti({
                       particleCount: 80,
@@ -1325,8 +1322,21 @@ export default function App(): React.JSX.Element {
                       colors: isBride ? ['#ffb6c1', '#d4af37'] : ['#2b2b2b', '#d4af37'],
                     });
 
-                    // الطريقة الأضمن للآيفون والأندرويد معا
-                    window.location.href = whatsappUrl;
+                    // محاولة الفتح العادية
+                    const newWindow = window.open(waUrl, '_blank');
+                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                      window.location.href = waUrl;
+                    }
+
+                    // احتياطي للآيفون (لو المتصفح الداخلي للواتساب حظر الفتح، بنسخ الرسالة وتنبيهه)
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      setTimeout(() => {
+                        setRsvpStatus(`Copied message! If WhatsApp didn't open, paste it directly to us.`);
+                      }, 1000);
+                    } catch (err) {
+                      console.log('Clipboard error', err);
+                    }
                   }}
                   className="space-y-4"
                 >
@@ -1349,8 +1359,11 @@ export default function App(): React.JSX.Element {
                     <Send className="w-4 h-4" />
                     Confirm via WhatsApp
                   </button>
+                  
+                  <p className="text-[10px] text-center text-gray-500 mt-1">
+                    💡 iPhone users: If it doesn't open, open the link in Safari or Chrome.
+                  </p>
                 </form>
-
 
 
 
