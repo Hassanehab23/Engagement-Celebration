@@ -257,26 +257,9 @@ const FadeInSection: React.FC<FadeInSectionProps> = ({
 };
 
 export default function App(): React.JSX.Element {
-  const [isOpen, setIsOpen] = useState<boolean>(() => {
-    return (
-      localStorage.getItem(
-        'wedding_is_open_mohamed_nada'
-      ) === 'true'
-    );
-  });
-
-  const [guestSide, setGuestSide] = useState<
-    'groom' | 'bride' | null
-  >(() => {
-    const savedSide = localStorage.getItem(
-      'wedding_guest_side_mohamed_nada'
-    );
-
-    return savedSide === 'groom' || savedSide === 'bride'
-      ? savedSide
-      : null;
-  });
-
+  // اخليهم يفتحوا على وضع عدم الاختيار إطلاقاً في كل مرة
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [guestSide, setGuestSide] = useState<'groom' | 'bride' | null>(null);
   const [isPlaying, setIsPlaying] =
     useState<boolean>(false);
 
@@ -507,7 +490,7 @@ export default function App(): React.JSX.Element {
     if (!guestName.trim()) return;
 
     const groomPhoneNumber =
-      '201149605489';
+      '201062287123';
 
     const bridePhoneNumber =
       '201286993480';
@@ -692,7 +675,7 @@ export default function App(): React.JSX.Element {
           <AutoScroll
             active={guestSide !== null}
             sectionIds={autoScrollSectionIds}
-            delayMs={8000}
+            delayMs={5000}
             loop
           />
 
@@ -1046,13 +1029,13 @@ export default function App(): React.JSX.Element {
                     </div>
 
                     <div className="grid grid-cols-7 gap-1 text-center text-[10px] sm:text-xs text-gray-500 mb-2 font-semibold">
-                      <span>Su</span>
-                      <span>Mo</span>
                       <span>Tu</span>
                       <span>We</span>
                       <span>Th</span>
                       <span>Fr</span>
                       <span>Sa</span>
+                      <span>Su</span>
+                      <span>Mo</span>
                     </div>
 
                     <div className="grid grid-cols-7 gap-1 text-center text-xs sm:text-sm items-center">
@@ -1555,7 +1538,7 @@ export default function App(): React.JSX.Element {
                         {/* Image Container */}
                         <div
                           className={`overflow-hidden rounded-2xl mb-3 ${index === galleryItems.length - 1
-                              ? "aspect-[3/4]"
+                              ? "aspect-3/4"
                               : ""
                             }`}
                         >
