@@ -11,96 +11,81 @@ export default function AutoScroll({
   active,
   sectionIds,
   delayMs = 5000,
-  loop = false,
+  loop = true,
 }: AutoScrollProps): null {
-  const timerRef = useRef<number | null>(null);
-  const currentIndexRef = useRef(0);
-  const pausedRef = useRef(false);
+  const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!active || sectionIds.length < 2) {
-      return undefined;
-    }
+    if (!active) return;
+    window.scrollTo(0, 0);
+  }, [active]);
 
-    currentIndexRef.current = 0;
-    pausedRef.current = false;
+  useEffect(() => {
+    if (!active || sectionIds.length === 0) return;
 
-    const clearTimer = () => {
-      if (timerRef.current !== null) {
-        window.clearTimeout(timerRef.current);
-        timerRef.current = null;
+    let currentSectionIndex = 0;
+    let paused = false;
+
+    const stop = () => {
+      if (intervalRef.current !== null) {
+        window.clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
     };
 
-    const pause = () => {
-      pausedRef.current = true;
-      clearTimer();
-    };
+    intervalRef.current = window.setInterval(() => {
+      if (paused) return;
 
-    const scrollToNextSection = () => {
-      if (pausedRef.current) {
+      const maxScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      // لو وصل لنهاية الصفحة
+      if (window.scrollY >= maxScroll - 5) {
+        if (!loop) {
+          stop();
+          return;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        currentSectionIndex = 0;
+        paused = true;
+        setTimeout(() => {
+          paused = false;
+        }, delayMs);
         return;
       }
 
-      const nextIndex = currentIndexRef.current + 1;
+      if (currentSectionIndex >= sectionIds.length) return;
 
-      if (nextIndex >= sectionIds.length) {
-        if (!loop) {
-          clearTimer();
-          return;
-        }
+      const currentId = sectionIds[currentSectionIndex];
+      const section = document.getElementById(currentId);
 
-        currentIndexRef.current = 0;
-      } else {
-        currentIndexRef.current = nextIndex;
+      if (!section) {
+        currentSectionIndex++;
+        return;
       }
 
-      const nextSection = document.getElementById(
-        sectionIds[currentIndexRef.current]
-      );
+      // القياس المباشر لمكان السكشن بالنسبة لشاشة العرض
+      const rect = section.getBoundingClientRect();
 
-      if (nextSection) {
-        const sectionTop =
-          nextSection.getBoundingClientRect().top + window.scrollY;
+      // أول ما بداية السكشن تقرب من أول الشاشة (تصبح عند صفر أو أقل بقليل)، نقف فوراً
+      if (rect.top <= 5 && rect.top >= -5) {
+        paused = true;
 
-        window.scrollTo({
-          top: sectionTop,
-          behavior: 'smooth',
-        });
+        setTimeout(() => {
+          paused = false;
+          currentSectionIndex++;
+        }, delayMs);
+        return;
       }
 
-      timerRef.current = window.setTimeout(
-        scrollToNextSection,
-        delayMs
-      );
-    };
-
-    const interactionEvents: Array<keyof WindowEventMap> = [
-      'wheel',
-      'touchstart',
-      'pointerdown',
-      'keydown',
-    ];
-
-    interactionEvents.forEach(eventName => {
-      window.addEventListener(eventName, pause, {
-        passive: true,
-      });
-    });
-
-    timerRef.current = window.setTimeout(
-      scrollToNextSection,
-      delayMs
-    );
+      // النزول التدريجي السريع والسلِس
+      window.scrollBy(0, 5);
+    }, 16);
 
     return () => {
-      clearTimer();
-
-      interactionEvents.forEach(eventName => {
-        window.removeEventListener(eventName, pause);
-      });
+      stop();
     };
-  }, [active, delayMs, loop, sectionIds]);
+  }, [active, sectionIds, delayMs, loop]);
 
   return null;
 }
