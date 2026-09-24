@@ -482,7 +482,7 @@ export default function App(): React.JSX.Element {
     }
   };
 
-const handleRsvpSubmit = (
+  const handleRsvpSubmit = (
     e: React.FormEvent
   ) => {
     e.preventDefault();
@@ -508,7 +508,7 @@ const handleRsvpSubmit = (
     );
 
     setRsvpStatus(
-      `Thank you, ${guestName}! Opening WhatsApp to confirm your attendance...`
+      `Thank you, ${guestName}! Redirecting to WhatsApp to confirm your attendance...`
     );
 
     confetti({
@@ -522,19 +522,12 @@ const handleRsvpSubmit = (
         : ['#2b2b2b', '#d4af37'],
     });
 
-    // رابط الـ wa.me المباشر (يعمل بكفاءة على الآيفون والأندرويد)
-    const whatsappUrl = `https://wa.me/${targetPhoneNumber}?text=${message}`;
-
-    // فتح الرابط بطريقة تتخطى حظر المتصفحات للـ Pop-ups على الآيفون
     setTimeout(() => {
-      const a = document.createElement('a');
-      a.href = whatsappUrl;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }, 1000);
+      window.open(
+        `https://wa.me/${targetPhoneNumber}?text=${message}`,
+        '_blank'
+      );
+    }, 1500);
   };
 
   const handleWishSubmit = (
@@ -1307,8 +1300,8 @@ const handleRsvpSubmit = (
                   Enter your name and confirm via WhatsApp to notify the correct side directly.
                 </p>
 
-                <form
-                  onSubmit={handleRsvpSubmit}
+<form
+                  onSubmit={(e) => e.preventDefault()}
                   className="space-y-4"
                 >
                   <input
@@ -1329,15 +1322,41 @@ const handleRsvpSubmit = (
                     required
                   />
 
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 sm:py-4 bg-[#25D366] text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition flex items-center justify-center gap-2 cursor-pointer uppercase text-[10px] sm:text-xs tracking-widest"
+                  <a
+                    href={
+                      guestName.trim()
+                        ? `https://wa.me/${isBride ? '201286993480' : '201062287123'}?text=${encodeURIComponent(
+                            `Hello! I am ${guestName} (${isBride ? "Bride's Side" : "Groom's Side"}), and I am delighted to confirm my attendance at Mohamed & Nada's engagement party! 💍✨`
+                          )}`
+                        : '#'
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      if (!guestName.trim()) {
+                        e.preventDefault();
+                        alert('Please enter your full name first!');
+                      } else {
+                        setRsvpStatus(`Thank you, ${guestName}! Opening WhatsApp...`);
+                        confetti({
+                          particleCount: 80,
+                          spread: 70,
+                          origin: { y: 0.8 },
+                          colors: isBride ? ['#ffb6c1', '#d4af37'] : ['#2b2b2b', '#d4af37'],
+                        });
+                      }
+                    }}
+                    className="w-full py-3.5 sm:py-4 bg-[#25D366] text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition flex items-center justify-center gap-2 cursor-pointer uppercase text-[10px] sm:text-xs tracking-widest block text-center"
                   >
                     <Send className="w-4 h-4" />
 
                     Confirm via WhatsApp
-                  </button>
+                  </a>
                 </form>
+
+
+
+
 
                 {rsvpStatus && (
                   <div
