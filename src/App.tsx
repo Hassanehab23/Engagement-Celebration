@@ -482,7 +482,7 @@ export default function App(): React.JSX.Element {
     }
   };
 
-  const handleRsvpSubmit = (
+const handleRsvpSubmit = (
     e: React.FormEvent
   ) => {
     e.preventDefault();
@@ -508,7 +508,7 @@ export default function App(): React.JSX.Element {
     );
 
     setRsvpStatus(
-      `Thank you, ${guestName}! Redirecting to WhatsApp to confirm your attendance...`
+      `Thank you, ${guestName}! Opening WhatsApp to confirm your attendance...`
     );
 
     confetti({
@@ -522,12 +522,19 @@ export default function App(): React.JSX.Element {
         : ['#2b2b2b', '#d4af37'],
     });
 
+    // رابط الـ wa.me المباشر (يعمل بكفاءة على الآيفون والأندرويد)
+    const whatsappUrl = `https://wa.me/${targetPhoneNumber}?text=${message}`;
+
+    // فتح الرابط بطريقة تتخطى حظر المتصفحات للـ Pop-ups على الآيفون
     setTimeout(() => {
-      window.open(
-        `https://wa.me/${targetPhoneNumber}?text=${message}`,
-        '_blank'
-      );
-    }, 1500);
+      const a = document.createElement('a');
+      a.href = whatsappUrl;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }, 1000);
   };
 
   const handleWishSubmit = (
