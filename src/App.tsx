@@ -1330,7 +1330,7 @@ export default function App(): React.JSX.Element {
                           )}`
                         : '#'
                     }
-                    target="_blank"
+                    target="_self"
                     rel="noopener noreferrer"
                     onClick={(e) => {
                       if (!guestName.trim()) {
