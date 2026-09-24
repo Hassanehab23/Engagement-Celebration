@@ -1300,7 +1300,46 @@ export default function App(): React.JSX.Element {
                   Enter your name and confirm via WhatsApp to notify the correct side directly.
                 </p>
 
-<div className="space-y-4">
+<form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!guestName.trim()) {
+                      alert('Please enter your full name first!');
+                      return;
+                    }
+
+                    const phone = isBride ? '201286993480' : '201062287123';
+                    const text = `Hello! I am ${guestName} (${isBride ? "Bride's Side" : "Groom's Side"}), and I am delighted to confirm my attendance at Mohamed & Nada's engagement party! 💍✨`;
+                    
+                    const waUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`;
+
+                    setRsvpStatus(`Thank you, ${guestName}! Opening WhatsApp...`);
+                    
+                    confetti({
+                      particleCount: 80,
+                      spread: 70,
+                      origin: { y: 0.8 },
+                      colors: isBride ? ['#ffb6c1', '#d4af37'] : ['#2b2b2b', '#d4af37'],
+                    });
+
+                    // محاولة الفتح العادية
+                    const newWindow = window.open(waUrl, '_blank');
+                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                      window.location.href = waUrl;
+                    }
+
+                    // احتياطي للآيفون (لو المتصفح الداخلي للواتساب حظر الفتح، بنسخ الرسالة وتنبيهه)
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      setTimeout(() => {
+                        setRsvpStatus(`Copied message! If WhatsApp didn't open, paste it directly to us.`);
+                      }, 1000);
+                    } catch (err) {
+                      console.log('Clipboard error', err);
+                    }
+                  }}
+                  className="space-y-4"
+                >
                   <input
                     type="text"
                     placeholder="Enter Your Full Name"
@@ -1310,41 +1349,21 @@ export default function App(): React.JSX.Element {
                     style={{
                       borderColor: isBride ? '#ffb6c1' : '#d4af37',
                     }}
+                    required
                   />
 
-                  {/* رابط ويب مباشر ومكتوب صح 100% يفتح في نفس التبويب لتجاوز حظر الآيفون */}
-                  <a
-                    href={`https://api.whatsapp.com/send?phone=${isBride ? '201286993480' : '201062287123'}&text=${encodeURIComponent(
-                      `Hello! I am ${guestName ? guestName : 'Guest'} (${isBride ? "Bride's Side" : "Groom's Side"}), and I am delighted to confirm my attendance at Mohamed & Nada's engagement party! 💍✨`
-                    )}`}
-                    target="_self"
-                    rel="noopener noreferrer"
-                    onClick={(e) => {
-                      if (!guestName.trim()) {
-                        e.preventDefault();
-                        alert('Please enter your full name first!');
-                      } else {
-                        confetti({
-                          particleCount: 80,
-                          spread: 70,
-                          origin: { y: 0.8 },
-                          colors: isBride ? ['#ffb6c1', '#d4af37'] : ['#2b2b2b', '#d4af37'],
-                        });
-                      }
-                    }}
-                    className="w-full py-3.5 sm:py-4 bg-[#25D366] text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition flex items-center justify-center gap-2 cursor-pointer uppercase text-[10px] sm:text-xs tracking-widest block text-center"
+                  <button
+                    type="submit"
+                    className="w-full py-3.5 sm:py-4 bg-[#25D366] text-white font-bold rounded-2xl shadow-lg hover:opacity-90 transition flex items-center justify-center gap-2 cursor-pointer uppercase text-[10px] sm:text-xs tracking-widest"
                   >
                     <Send className="w-4 h-4" />
                     Confirm via WhatsApp
-                  </a>
-
-                  {/* تنبيه مهم جداً لليوزر عشان يفهم يعمل إيه */}
-                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-center">
-                    <p className="text-[11px] text-amber-800 font-medium">
-                      📱 <strong>iPhone Users:</strong> If WhatsApp doesn't open automatically, please tap the three dots (...) or share icon at the top right and select <strong>"Open in Safari"</strong>.
-                    </p>
-                  </div>
-                </div>
+                  </button>
+                  
+                  <p className="text-[10px] text-center text-gray-500 mt-1">
+                    💡 iPhone users: If it doesn't open, open the link in Safari or Chrome.
+                  </p>
+                </form>
 
 
 
