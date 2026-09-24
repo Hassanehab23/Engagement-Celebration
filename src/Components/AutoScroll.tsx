@@ -14,10 +14,12 @@ export default function AutoScroll({
   loop = true,
 }: AutoScrollProps): null {
   const intervalRef = useRef<number | null>(null);
+  const isStoppedManually = useRef(false);
 
   useEffect(() => {
     if (!active) return;
     window.scrollTo(0, 0);
+    isStoppedManually.current = false;
   }, [active]);
 
   useEffect(() => {
@@ -33,8 +35,26 @@ export default function AutoScroll({
       }
     };
 
+    // دالة إيقاف السكرول التلقائي فور لمس الشاشة أو تحريك الماوس
+    const handleUserInteraction = () => {
+      isStoppedManually.current = true;
+      stop();
+    };
+
+    // ربط أحداث تفاعل المستخدم
+    const events: Array<keyof WindowEventMap> = [
+      'wheel',
+      'touchstart',
+      'pointerdown',
+      'keydown',
+    ];
+
+    events.forEach((eventName) => {
+      window.addEventListener(eventName, handleUserInteraction, { passive: true });
+    });
+
     intervalRef.current = window.setInterval(() => {
-      if (paused) return;
+      if (paused || isStoppedManually.current) return;
 
       const maxScroll =
         document.documentElement.scrollHeight - window.innerHeight;
@@ -49,7 +69,9 @@ export default function AutoScroll({
         currentSectionIndex = 0;
         paused = true;
         setTimeout(() => {
-          paused = false;
+          if (!isStoppedManually.current) {
+            paused = false;
+          }
         }, delayMs);
         return;
       }
@@ -64,16 +86,17 @@ export default function AutoScroll({
         return;
       }
 
-      // القياس المباشر لمكان السكشن بالنسبة لشاشة العرض
       const rect = section.getBoundingClientRect();
 
-      // أول ما بداية السكشن تقرب من أول الشاشة (تصبح عند صفر أو أقل بقليل)، نقف فوراً
+      // أول ما بداية السكشن تقرب من أول الشاشة، نقف 5 ثواني
       if (rect.top <= 5 && rect.top >= -5) {
         paused = true;
 
         setTimeout(() => {
-          paused = false;
-          currentSectionIndex++;
+          if (!isStoppedManually.current) {
+            paused = false;
+            currentSectionIndex++;
+          }
         }, delayMs);
         return;
       }
@@ -84,6 +107,9 @@ export default function AutoScroll({
 
     return () => {
       stop();
+      events.forEach((eventName) => {
+        window.removeEventListener(eventName, handleUserInteraction);
+      });
     };
   }, [active, sectionIds, delayMs, loop]);
 
