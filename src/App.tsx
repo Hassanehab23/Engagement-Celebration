@@ -19,18 +19,21 @@ import {
   MessageCircleHeart,
   Shirt,
 } from 'lucide-react';
+
 interface TimeLeft {
   days: number;
   hours: number;
   minutes: number;
   seconds: number;
 }
+
 interface Wish {
   name: string;
   message: string;
   date: string;
   side: 'groom' | 'bride';
 }
+
 const autoScrollSectionIds = [
   'hero',
   'countdown',
@@ -42,6 +45,7 @@ const autoScrollSectionIds = [
   'gallery',
   'footer',
 ];
+
 const HeroSection = styled.div<{ isBride: boolean }>`
   background:
     linear-gradient(
@@ -70,6 +74,7 @@ const HeroSection = styled.div<{ isBride: boolean }>`
     padding: 60px 32px;
   }
 `;
+
 const BackgroundWatermarkText = styled.div`
   position: absolute;
   top: 50%;
@@ -85,6 +90,7 @@ const BackgroundWatermarkText = styled.div`
   text-transform: uppercase;
   letter-spacing: clamp(5px, 2vw, 20px);
 `;
+
 const GoldText = styled.span<{ isBride: boolean }>`
   color: ${props => (props.isBride ? '#f3c6df' : '#d4af37')};
   font-weight: 700;
@@ -92,10 +98,11 @@ const GoldText = styled.span<{ isBride: boolean }>`
   text-shadow:
     0 2px 10px
       ${props =>
-    props.isBride
-      ? 'rgba(243, 198, 223, 0.3)'
-      : 'rgba(212, 175, 55, 0.4)'};
+        props.isBride
+          ? 'rgba(243, 198, 223, 0.3)'
+          : 'rgba(212, 175, 55, 0.4)'};
 `;
+
 const GlassCard = styled.div`
   background: rgba(255, 240, 245, 0.08);
   backdrop-filter: blur(20px);
@@ -103,6 +110,7 @@ const GlassCard = styled.div`
   border: 1px solid rgba(243, 198, 223, 0.35);
   box-shadow: 0 25px 50px rgba(70, 15, 35, 0.3);
 `;
+
 const LuxuryGoldCard = styled.div`
   width: 100%;
   background: white;
@@ -133,12 +141,14 @@ const LuxuryGoldCard = styled.div`
       0 15px 25px rgba(70, 15, 35, 0.12);
   }
 `;
+
 interface FadeInSectionProps {
   children: React.ReactNode;
   className?: string;
   direction?: 'up' | 'down' | 'left' | 'right' | 'scale';
   delay?: number;
 }
+
 const FadeInSection: React.FC<FadeInSectionProps> = ({
   children,
   className = '',
@@ -201,6 +211,7 @@ const FadeInSection: React.FC<FadeInSectionProps> = ({
     </div>
   );
 };
+
 export default function App(): React.JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [guestSide, setGuestSide] = useState<'groom' | 'bride' | null>(null);
@@ -210,29 +221,31 @@ export default function App(): React.JSX.Element {
   const [wishName, setWishName] = useState<string>('');
   const [wishMessage, setWishMessage] = useState<string>('');
   const [wishFilter, setWishFilter] = useState<'all' | 'groom' | 'bride'>('all');
+  const [wishes, setWishes] = useState<Wish[]>([]);
 
-  const [wishes, setWishes] = useState<Wish[]>(() => {
-    const savedWishes = localStorage.getItem(
-      'wedding_wishes_mohamed_nada_v2'
-    );
-    if (savedWishes) {
-      try {
-        return JSON.parse(savedWishes);
-      } catch (e) {
-        console.error(
-          'Error parsing saved wishes',
-          e
-        );
-      }
-    }
-    return [];
-  });
+  // جلب المباركات أونلاين لتظهر كأنها تعليقات حية
   useEffect(() => {
-    localStorage.setItem(
-      'wedding_wishes_mohamed_nada_v2',
-      JSON.stringify(wishes)
-    );
-  }, [wishes]);
+    const fetchWishes = async () => {
+      try {
+        const res = await fetch('https://api.jsonbin.io/v3/b/65e9b891dc74654018b1423b/latest', {
+          headers: {
+            'X-Master-Key': '$2a$10$7v5Qz6V7v5Qz6V7v5Qz6VuZ6V7v5Qz6V7v5Qz6V7v5Qz6V7v5Qz6V'
+          }
+        });
+        const data = await res.json();
+        if (data && data.record) {
+          setWishes(data.record);
+        }
+      } catch (e) {
+        const saved = localStorage.getItem('wedding_wishes_mohamed_nada_v2');
+        if (saved) setWishes(JSON.parse(saved));
+      }
+    };
+    fetchWishes();
+    const interval = setInterval(fetchWishes, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
@@ -240,9 +253,8 @@ export default function App(): React.JSX.Element {
     seconds: 0,
   });
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const targetDate = new Date(
-    '2026-09-30T19:00:00'
-  ).getTime();
+  const targetDate = new Date('2026-09-30T19:00:00').getTime();
+
   useEffect(() => {
     const timer = setInterval(() => {
       const now = Date.now();
@@ -255,36 +267,33 @@ export default function App(): React.JSX.Element {
           seconds: Math.floor((difference / 1000) % 60),
         });
       } else {
-        setTimeLeft({
-          days: 0,
-          hours: 0,
-          minutes: 0,
-          seconds: 0,
-        });
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
     }, 1000);
     return () => clearInterval(timer);
   }, [targetDate]);
+
   const isBride = guestSide === 'bride';
   const groomAudioUrl = '/Hollela.mp3';
   const brideAudioUrl = '/El Leila.mp3';
   const theme = isBride
     ? {
-      bgMain: '#fff8fa',
-      bgSection: '#fff5f8',
-      primaryColor: '#d87093',
-      accentPink: '#ffb6c1',
-      cardBg: '#fff0f5',
-      textDark: '#501525',
-    }
+        bgMain: '#fff8fa',
+        bgSection: '#fff5f8',
+        primaryColor: '#d87093',
+        accentPink: '#ffb6c1',
+        cardBg: '#fff0f5',
+        textDark: '#501525',
+      }
     : {
-      bgMain: '#f9f9fb',
-      bgSection: '#f2f2f5',
-      primaryColor: '#2b2b2b',
-      accentPink: '#d4af37',
-      cardBg: '#ffffff',
-      textDark: '#1a1a1a',
-    };
+        bgMain: '#f9f9fb',
+        bgSection: '#f2f2f5',
+        primaryColor: '#2b2b2b',
+        accentPink: '#d4af37',
+        cardBg: '#ffffff',
+        textDark: '#1a1a1a',
+      };
+
   const handleSelectSide = (side: 'groom' | 'bride'): void => {
     setGuestSide(side);
     setIsOpen(true);
@@ -294,9 +303,7 @@ export default function App(): React.JSX.Element {
         audioRef.current.load();
         audioRef.current
           .play()
-          .then(() => {
-            setIsPlaying(true);
-          })
+          .then(() => setIsPlaying(true))
           .catch(err => console.log('Audio autoplay restricted', err));
       }
     }, 150);
@@ -304,11 +311,13 @@ export default function App(): React.JSX.Element {
       particleCount: 200,
       spread: 110,
       origin: { y: 0.6 },
-      colors: side === 'bride'
-        ? ['#ffb6c1', '#d4af37', '#ffffff', '#ff69b4', '#fff0f5']
-        : ['#2b2b2b', '#d4af37', '#ffffff', '#708090'],
+      colors:
+        side === 'bride'
+          ? ['#ffb6c1', '#d4af37', '#ffffff', '#ff69b4', '#fff0f5']
+          : ['#2b2b2b', '#d4af37', '#ffffff', '#708090'],
     });
   };
+
   const handleSwitchSide = () => {
     setIsOpen(false);
     setGuestSide(null);
@@ -317,6 +326,7 @@ export default function App(): React.JSX.Element {
       setIsPlaying(false);
     }
   };
+
   const toggleMusic = (): void => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -325,14 +335,13 @@ export default function App(): React.JSX.Element {
       } else {
         audioRef.current
           .play()
-          .then(() => {
-            setIsPlaying(true);
-          })
+          .then(() => setIsPlaying(true))
           .catch(err => console.log('Audio play error', err));
       }
     }
   };
-  const handleWishSubmit = (e: React.FormEvent) => {
+
+  const handleWishSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!wishName.trim() || !wishMessage.trim() || !guestSide) return;
     const newWish: Wish = {
@@ -341,9 +350,25 @@ export default function App(): React.JSX.Element {
       date: 'Just now',
       side: guestSide,
     };
-    setWishes([newWish, ...wishes]);
+    
+    const updatedWishes = [newWish, ...wishes];
+    setWishes(updatedWishes);
     setWishName('');
     setWishMessage('');
+
+    try {
+      await fetch('https://api.jsonbin.io/v3/b/65e9b891dc74654018b1423b', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': '$2a$10$7v5Qz6V7v5Qz6V7v5Qz6VuZ6V7v5Qz6V7v5Qz6V7v5Qz6V7v5Qz6V'
+        },
+        body: JSON.stringify(updatedWishes)
+      });
+    } catch (err) {
+      console.log('Error saving online', err);
+    }
+
     confetti({
       particleCount: 100,
       spread: 90,
@@ -362,12 +387,14 @@ export default function App(): React.JSX.Element {
   )}&dates=20260930T190000Z/20260930T230000Z&details=${encodeURIComponent(
     "Join us to celebrate the engagement of Mohamed & Nada at Nile Hall, Nile Corniche, Imbaba, Giza."
   )}&location=${encodeURIComponent('Nile Hall, Nile Corniche, Imbaba, Giza')}`;
+
   const galleryItems = [
     { img: img4, caption: 'Where our hearts connected...' },
     { img: img2, caption: 'Precious Childhood Memories' },
     { img: img3, caption: 'Growing up together in love' },
     { img: img1, caption: 'Our Forever Chapter' },
   ];
+
   return (
     <div
       className="min-h-screen w-full overflow-x-hidden font-sans transition-colors duration-500"
@@ -521,6 +548,7 @@ export default function App(): React.JSX.Element {
               </div>
             </div>
           </HeroSection>
+
           <FadeInSection direction="up">
             <section id="countdown" className="py-12 sm:py-20 bg-white text-center">
               <div className="max-w-4xl mx-auto px-4">
@@ -564,6 +592,7 @@ export default function App(): React.JSX.Element {
               </div>
             </section>
           </FadeInSection>
+
           <section id="invitation" className="py-12 sm:py-20 overflow-hidden" style={{ backgroundColor: theme.bgSection }}>
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8">
               <FadeInSection direction="right" delay={100}>
@@ -681,6 +710,7 @@ export default function App(): React.JSX.Element {
               </FadeInSection>
             </div>
           </section>
+
           <FadeInSection direction="up">
             <section id="story-timeline" className="py-12 sm:py-20 bg-white text-center">
               <div className="max-w-4xl mx-auto px-4">
@@ -738,6 +768,7 @@ export default function App(): React.JSX.Element {
               </div>
             </section>
           </FadeInSection>
+
           <FadeInSection direction="up">
             <section id="rsvp" className="py-12 sm:py-20 text-center" style={{ backgroundColor: theme.bgMain }}>
               <div className="max-w-xl mx-auto px-4">
@@ -807,6 +838,7 @@ export default function App(): React.JSX.Element {
               </div>
             </section>
           </FadeInSection>
+
           <FadeInSection direction="up">
             <section id="wishes-wall" className="py-12 sm:py-20" style={{ backgroundColor: theme.bgSection }}>
               <div className="max-w-4xl mx-auto px-4">
@@ -871,6 +903,7 @@ export default function App(): React.JSX.Element {
                     </button>
                   </form>
                 </div>
+
                 <div className="grid gap-4">
                   {filteredWishes.length === 0 ? (
                     <p className="text-center text-gray-400 py-6 text-sm">No wishes found in this section yet. Be the first to leave one! ✨</p>
