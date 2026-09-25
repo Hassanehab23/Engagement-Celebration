@@ -841,7 +841,7 @@ export default function App(): React.JSX.Element {
                 </div>
                 <div className="grid gap-4">
                   {wishes.length === 0 ? (
-                    <p className="text-center text-gray-400 py-6 text-sm">کن أول من يترك تهنئة للعروسين! ✨</p>
+                    <p className="text-center text-gray-400 py-6 text-sm">كن أول من يترك تهنئة للعروسين! ✨</p>
                   ) : (
                     wishes.map((wish, index) => (
                       <FadeInSection key={index} direction="up" delay={index * 50}>
@@ -859,7 +859,7 @@ export default function App(): React.JSX.Element {
               </div>
             </section>
           </FadeInSection>
-          
+
           {/* GALLERY */}
           <FadeInSection direction="up">
             <section id="gallery" className="py-12 sm:py-20 bg-white">
