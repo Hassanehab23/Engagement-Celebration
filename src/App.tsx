@@ -275,7 +275,7 @@ export default function App(): React.JSX.Element {
   const [wishMessage, setWishMessage] =
     useState<string>('');
   // ✅ ضع الكود الجديد ده:
-  // 1. مسح المفتاح القديم الموحد نهائياً
+     // 1. مسح المفتاح القديم الموحد نهائياً مرة واحدة عند تحميل الصفحة
   useEffect(() => {
     localStorage.removeItem('wedding_wishes_mohamed_nada');
   }, []);
@@ -283,7 +283,7 @@ export default function App(): React.JSX.Element {
   // 2. حالة المباركات
   const [wishes, setWishes] = useState<Wish[]>([]);
 
-  // 3. قراءة التهاني الخاصة بالطرف المختار (عريس أو عروسة) عند الدخول
+  // 3. قراءة التهاني الخاصة بالطرف المختار (عريس أو عروسة) عند الدخول أو تغيير الجانب
   useEffect(() => {
     if (!guestSide) return;
 
@@ -303,6 +303,7 @@ export default function App(): React.JSX.Element {
       setWishes([]);
     }
   }, [guestSide, isBride]);
+  
 
   const [timeLeft, setTimeLeft] =
     useState<TimeLeft>({
