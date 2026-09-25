@@ -655,7 +655,7 @@ export default function App(): React.JSX.Element {
                       </span>
                     </div>
                     <div className="grid grid-cols-7 gap-1 text-center text-[10px] sm:text-xs text-gray-500 mb-2 font-semibold">
-                      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                      <span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span><span>Mo</span>
                     </div>
                     <div className="grid grid-cols-7 gap-1 text-center text-xs sm:text-sm items-center">
                       {Array.from({ length: 30 }, (_, i) => {
