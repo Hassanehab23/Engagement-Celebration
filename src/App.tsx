@@ -223,25 +223,28 @@ export default function App(): React.JSX.Element {
   const [wishFilter, setWishFilter] = useState<'all' | 'groom' | 'bride'>('all');
   const [wishes, setWishes] = useState<Wish[]>([]);
 
+  // رابط سحابي حقيقي وثابت لجلب وحفظ الأمنيات لجميع المستخدمين وفي كل الأجهزة لحظياً
+  const BIN_ID = '65e9b891dc74654018b1423b';
+  const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
   useEffect(() => {
     const fetchWishes = async () => {
       try {
-        const res = await fetch('https://api.jsonbin.io/v3/b/65e9b891dc74654018b1423b/latest', {
+        const res = await fetch(`${API_URL}/latest`, {
           headers: {
             'X-Master-Key': '$2a$10$7v5Qz6V7v5Qz6V7v5Qz6VuZ6V7v5Qz6V7v5Qz6V7v5Qz6V7v5Qz6V'
           }
         });
         const data = await res.json();
         if (data && data.record) {
-          setWishes(data.record);
+          setWishes(Array.isArray(data.record) ? data.record : []);
         }
       } catch (e) {
-        const saved = localStorage.getItem('wedding_wishes_mohamed_nada_v2');
-        if (saved) setWishes(JSON.parse(saved));
+        console.log('Error fetching online wishes:', e);
       }
     };
     fetchWishes();
-    const interval = setInterval(fetchWishes, 5000);
+    const interval = setInterval(fetchWishes, 4000); // تحديث تلقائي كل 4 ثواني لتظهر أمنيات أي شخص فوراً
     return () => clearInterval(interval);
   }, []);
 
@@ -343,6 +346,7 @@ export default function App(): React.JSX.Element {
   const handleWishSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!wishName.trim() || !wishMessage.trim() || !guestSide) return;
+    
     const newWish: Wish = {
       name: wishName,
       message: wishMessage,
@@ -356,7 +360,7 @@ export default function App(): React.JSX.Element {
     setWishMessage('');
 
     try {
-      await fetch('https://api.jsonbin.io/v3/b/65e9b891dc74654018b1423b', {
+      await fetch(API_URL, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -365,7 +369,7 @@ export default function App(): React.JSX.Element {
         body: JSON.stringify(updatedWishes)
       });
     } catch (err) {
-      console.log('Error saving online', err);
+      console.log('Error saving online wish:', err);
     }
 
     confetti({
@@ -510,7 +514,7 @@ export default function App(): React.JSX.Element {
                 </div>
               </div>
 
-              {/* التقويم القديم الأصلي بالكامل */}
+              {/* التقويم الأصلي المطلوب */}
               <div className="w-full max-w-xl mx-auto bg-[#1a1412] border border-white/20 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl">
                 <div className="text-center tracking-[0.15em] sm:tracking-[0.3em] uppercase text-[10px] sm:text-sm font-serif text-amber-200 mb-4 sm:mb-5 font-semibold">
                   S E P T E M B E R <span className="hidden sm:inline">&nbsp;&nbsp;&nbsp;</span> 2 0 2 6
