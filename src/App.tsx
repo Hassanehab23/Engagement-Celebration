@@ -859,29 +859,54 @@ export default function App(): React.JSX.Element {
               </div>
             </section>
           </FadeInSection>
+          
+          {/* GALLERY */}
           <FadeInSection direction="up">
             <section id="gallery" className="py-12 sm:py-20 bg-white">
               <div className="max-w-6xl mx-auto px-4 text-center">
-                <div className="flex items-center justify-center gap-2 mb-2" style={{ color: isBride ? "#d87093" : "#d4af37" }}>
+                <div
+                  className="flex items-center justify-center gap-2 mb-2"
+                  style={{ color: isBride ? "#d87093" : "#d4af37" }}
+                >
                   <ImageIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-                  <h3 className="text-2xl sm:text-4xl font-serif text-gray-900">Our Story in Pictures</h3>
+                  <h3 className="text-2xl sm:text-4xl font-serif text-gray-900">
+                    Our Story in Pictures
+                  </h3>
                 </div>
-                <p className="text-gray-500 mb-8 sm:mb-12 text-xs sm:text-base px-2">Sweet childhood memories and wonderful moments leading to forever.</p>
+
+                <p className="text-gray-500 mb-8 sm:mb-12 text-xs sm:text-base px-2">
+                  Sweet childhood memories and wonderful moments leading to forever.
+                </p>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                   {galleryItems.map((item, index) => {
                     const isLast = index === galleryItems.length - 1;
                     return (
                       <FadeInSection key={index} direction="scale" delay={index * 100}>
-                        <div className="p-3 rounded-3xl shadow-xl border group overflow-hidden h-full flex flex-col justify-between" style={{ backgroundColor: theme.cardBg, borderColor: isBride ? "rgba(255,182,193,0.3)" : "rgba(212,175,55,0.3)" }}>
+                        <div
+                          className="p-3 rounded-3xl shadow-xl border group overflow-hidden h-full flex flex-col justify-between"
+                          style={{
+                            backgroundColor: theme.cardBg,
+                            borderColor: isBride
+                              ? "rgba(255,182,193,0.3)"
+                              : "rgba(212,175,55,0.3)",
+                          }}
+                        >
                           <div className={`overflow-hidden rounded-2xl mb-3 ${isLast ? "aspect-3/4" : ""}`}>
                             <img
                               src={item.img}
                               alt={item.caption}
                               loading="lazy"
-                              className={"w-full rounded-2xl group-hover:scale-105 transition duration-700 " + (isLast ? "h-full object-cover" : "h-auto object-contain")}
+                              className={
+                                "w-full rounded-2xl group-hover:scale-105 transition duration-700 " +
+                                (isLast ? "h-full object-cover" : "h-auto object-contain")
+                              }
                             />
                           </div>
-                          <p className="text-gray-700 font-serif text-sm pb-2 font-medium">{item.caption}</p>
+
+                          <p className="text-gray-700 font-serif text-sm pb-2 font-medium">
+                            {item.caption}
+                          </p>
                         </div>
                       </FadeInSection>
                     );
@@ -890,6 +915,7 @@ export default function App(): React.JSX.Element {
               </div>
             </section>
           </FadeInSection>
+
           <footer
             id="footer"
             className="py-6 text-center border-t transition-colors duration-500"
