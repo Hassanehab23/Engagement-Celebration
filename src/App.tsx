@@ -1041,7 +1041,7 @@ export default function App(): React.JSX.Element {
               </div>
             </section>
           </FadeInSection>
-                {/* FOOTER - الفوتر السفلي */}
+          
           <footer
             id="footer"
             className="py-6 text-center border-t transition-colors duration-500"
