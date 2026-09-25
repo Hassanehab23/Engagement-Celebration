@@ -29,6 +29,7 @@ interface Wish {
   name: string;
   message: string;
   date: string;
+  side: 'groom' | 'bride';
 }
 const autoScrollSectionIds = [
   'hero',
@@ -208,9 +209,11 @@ export default function App(): React.JSX.Element {
   const [rsvpStatus, setRsvpStatus] = useState<string | null>(null);
   const [wishName, setWishName] = useState<string>('');
   const [wishMessage, setWishMessage] = useState<string>('');
+  const [wishFilter, setWishFilter] = useState<'all' | 'groom' | 'bride'>('all');
+
   const [wishes, setWishes] = useState<Wish[]>(() => {
     const savedWishes = localStorage.getItem(
-      'wedding_wishes_mohamed_nada'
+      'wedding_wishes_mohamed_nada_v2'
     );
     if (savedWishes) {
       try {
@@ -226,7 +229,7 @@ export default function App(): React.JSX.Element {
   });
   useEffect(() => {
     localStorage.setItem(
-      'wedding_wishes_mohamed_nada',
+      'wedding_wishes_mohamed_nada_v2',
       JSON.stringify(wishes)
     );
   }, [wishes]);
@@ -285,8 +288,7 @@ export default function App(): React.JSX.Element {
   const handleSelectSide = (side: 'groom' | 'bride'): void => {
     setGuestSide(side);
     setIsOpen(true);
-    localStorage.setItem('wedding_guest_side_mohamed_nada', side);
-    localStorage.setItem('wedding_is_open_mohamed_nada', 'true');
+    setWishFilter(side);
     setTimeout(() => {
       if (audioRef.current) {
         audioRef.current.load();
@@ -310,8 +312,6 @@ export default function App(): React.JSX.Element {
   const handleSwitchSide = () => {
     setIsOpen(false);
     setGuestSide(null);
-    localStorage.removeItem('wedding_guest_side_mohamed_nada');
-    localStorage.setItem('wedding_is_open_mohamed_nada', 'false');
     if (audioRef.current) {
       audioRef.current.pause();
       setIsPlaying(false);
@@ -334,11 +334,12 @@ export default function App(): React.JSX.Element {
   };
   const handleWishSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!wishName.trim() || !wishMessage.trim()) return;
+    if (!wishName.trim() || !wishMessage.trim() || !guestSide) return;
     const newWish: Wish = {
       name: wishName,
       message: wishMessage,
       date: 'Just now',
+      side: guestSide,
     };
     setWishes([newWish, ...wishes]);
     setWishName('');
@@ -350,6 +351,12 @@ export default function App(): React.JSX.Element {
       colors: isBride ? ['#ff69b4', '#d4af37'] : ['#2b2b2b', '#d4af37'],
     });
   };
+
+  const filteredWishes = wishes.filter(wish => {
+    if (wishFilter === 'all') return true;
+    return wish.side === wishFilter;
+  });
+
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
     "Mohamed & Nada's Engagement"
   )}&dates=20260930T190000Z/20260930T230000Z&details=${encodeURIComponent(
@@ -617,7 +624,7 @@ export default function App(): React.JSX.Element {
                       </span>
                     </div>
                     <div className="grid grid-cols-7 gap-1 text-center text-[10px] sm:text-xs text-gray-500 mb-2 font-semibold">
-                      <span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span><span>Mo</span>
+                      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
                     </div>
                     <div className="grid grid-cols-7 gap-1 text-center text-xs sm:text-sm items-center">
                       {Array.from({ length: 30 }, (_, i) => {
@@ -806,12 +813,37 @@ export default function App(): React.JSX.Element {
                 <div className="text-center mb-8 sm:mb-12">
                   <div className="flex items-center justify-center gap-2 mb-2" style={{ color: isBride ? '#d87093' : '#d4af37' }}>
                     <MessageCircleHeart className="w-7 h-7 sm:w-8 sm:h-8" />
-                    <h3 className="text-2xl sm:text-3xl font-serif text-gray-900">Send Your Wishes</h3>
+                    <h3 className="text-2xl sm:text-3xl font-serif text-gray-900">Wishes Wall</h3>
                   </div>
                   <p className="text-gray-500 text-xs sm:text-sm px-2">Leave a loving note or a congratulatory message for Mohamed & Nada.</p>
                 </div>
+
+                <div className="flex justify-center gap-2 mb-6 flex-wrap">
+                  <button
+                    onClick={() => setWishFilter('all')}
+                    className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${wishFilter === 'all' ? 'bg-gray-900 text-white shadow-md' : 'bg-white text-gray-700 border border-gray-200'}`}
+                  >
+                    All Wishes ({wishes.length})
+                  </button>
+                  <button
+                    onClick={() => setWishFilter('groom')}
+                    className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${wishFilter === 'groom' ? 'bg-gray-800 text-amber-400 shadow-md' : 'bg-white text-gray-700 border border-gray-200'}`}
+                  >
+                    🤵 Groom's Wishes ({wishes.filter(w => w.side === 'groom').length})
+                  </button>
+                  <button
+                    onClick={() => setWishFilter('bride')}
+                    className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${wishFilter === 'bride' ? 'bg-pink-500 text-white shadow-md' : 'bg-white text-gray-700 border border-gray-200'}`}
+                  >
+                    👰 Bride's Wishes ({wishes.filter(w => w.side === 'bride').length})
+                  </button>
+                </div>
+
                 <div className="bg-white p-5 sm:p-8 rounded-3xl shadow-xl border mb-8 sm:mb-10" style={{ borderColor: isBride ? 'rgba(255,182,193,0.3)' : 'rgba(212,175,55,0.3)' }}>
                   <form onSubmit={handleWishSubmit} className="space-y-4">
+                    <div className="text-xs font-semibold text-gray-500 mb-1">
+                      Your wish will be posted under: <span className="text-pink-600 font-bold">{isBride ? "Bride's Side 👰" : "Groom's Side 🤵"}</span>
+                    </div>
                     <input
                       type="text"
                       placeholder="Your Full Name"
@@ -840,13 +872,16 @@ export default function App(): React.JSX.Element {
                   </form>
                 </div>
                 <div className="grid gap-4">
-                  {wishes.length === 0 ? (
-                    <p className="text-center text-gray-400 py-6 text-sm">كن أول من يترك تهنئة للعروسين! ✨</p>
+                  {filteredWishes.length === 0 ? (
+                    <p className="text-center text-gray-400 py-6 text-sm">No wishes found in this section yet. Be the first to leave one! ✨</p>
                   ) : (
-                    wishes.map((wish, index) => (
+                    filteredWishes.map((wish, index) => (
                       <FadeInSection key={index} direction="up" delay={index * 50}>
-                        <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-md border" style={{ borderColor: isBride ? 'rgba(255,182,193,0.3)' : 'rgba(212,175,55,0.3)' }}>
-                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-2">
+                        <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-md border relative" style={{ borderColor: isBride ? 'rgba(255,182,193,0.3)' : 'rgba(212,175,55,0.3)' }}>
+                          <span className={`absolute top-4 right-4 text-[10px] px-2.5 py-0.5 rounded-full font-bold ${wish.side === 'bride' ? 'bg-pink-100 text-pink-700' : 'bg-gray-100 text-gray-800'}`}>
+                            {wish.side === 'bride' ? '👰 Bride' : '🤵 Groom'}
+                          </span>
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-2 pl-16">
                             <span className="font-serif font-bold text-gray-900 text-base sm:text-lg wrap-break-word">{wish.name}</span>
                             <span className="text-xs text-gray-400">{wish.date}</span>
                           </div>
@@ -860,7 +895,6 @@ export default function App(): React.JSX.Element {
             </section>
           </FadeInSection>
 
-          {/* GALLERY */}
           <FadeInSection direction="up">
             <section id="gallery" className="py-12 sm:py-20 bg-white">
               <div className="max-w-6xl mx-auto px-4 text-center">
