@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import styled from '@emotion/styled';
 import confetti from 'canvas-confetti';
-import img1 from "./assets/Images/4.jpg"
-import img2 from "./assets/Images/3.jpeg"
-import img3 from "./assets/Images/2.jpeg"
-import img4 from "./assets/Images/1.jpeg"
+import img1 from "./assets/Images/4.jpg";
+import img2 from "./assets/Images/3.jpeg";
+import img3 from "./assets/Images/2.jpeg";
+import img4 from "./assets/Images/1.jpeg";
 import AutoScroll from './Components/AutoScroll';
 import {
   Heart,
@@ -45,7 +45,7 @@ const autoScrollSectionIds = [
   'footer',
 ];
 
-const HeroSection = styled.div<{ isBride: boolean,id?:string }>`
+const HeroSection = styled.div<{ isBride: boolean; id?: string }>`
   background:
     linear-gradient(
       rgba(45, 10, 25, 0.75),
@@ -186,7 +186,6 @@ const FadeInSection: React.FC<FadeInSectionProps> = ({
   delay = 0,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-
   const domRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -221,19 +220,14 @@ const FadeInSection: React.FC<FadeInSectionProps> = ({
       switch (direction) {
         case 'up':
           return 'opacity-0 translate-y-16';
-
         case 'down':
           return 'opacity-0 -translate-y-16';
-
         case 'left':
           return 'opacity-0 translate-x-16';
-
         case 'right':
           return 'opacity-0 -translate-x-16';
-
         case 'scale':
           return 'opacity-0 scale-90';
-
         default:
           return 'opacity-0 translate-y-16';
       }
@@ -256,7 +250,6 @@ const FadeInSection: React.FC<FadeInSectionProps> = ({
 };
 
 export default function App(): React.JSX.Element {
-  // حالة اختيار جانب الزائر (عريس أم عروسة)
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [guestSide, setGuestSide] = useState<'groom' | 'bride' | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -267,25 +260,16 @@ export default function App(): React.JSX.Element {
   const [wishName, setWishName] = useState<string>('');
   const [wishMessage, setWishMessage] = useState<string>('');
 
-  // -------------------------------------------------------------
-  // 1️⃣ إدارة حالة المباركات وتخزينها حسب الطرف (عريس / عروسة)
-  // -------------------------------------------------------------
-
-  // مسح قائمة التهاني الموحدة القديمة نهائياً مرة واحدة عند تحميل التطبيق
   useEffect(() => {
     localStorage.removeItem('wedding_wishes_mohamed_nada');
   }, []);
 
-  // قائمة التهاني المعروضة حالياً
   const [wishes, setWishes] = useState<Wish[]>([]);
-
   const isBride = guestSide === 'bride';
 
-  // تحميل التهاني الخاصة بالجانب المختار عند فتح التطبيق أو تغيير الجانب (Groom / Bride)
   useEffect(() => {
     if (!guestSide) return;
 
-    // تحديد المفتاح الخاص بكل طرف في الـ LocalStorage
     const storageKey = isBride
       ? 'wedding_wishes_bride'
       : 'wedding_wishes_groom';
@@ -303,8 +287,6 @@ export default function App(): React.JSX.Element {
     }
   }, [guestSide, isBride]);
 
-  // -------------------------------------------------------------
-
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
@@ -313,8 +295,7 @@ export default function App(): React.JSX.Element {
   });
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const targetDate = new Date('2026-09-30T19:00:00').getTime();
+  const targetDate = useMemo(() => new Date('2026-09-30T19:00:00').getTime(), []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -417,10 +398,6 @@ export default function App(): React.JSX.Element {
     }
   };
 
-  // -------------------------------------------------------------
-  // 2️⃣ إرسال التهنئة وحفظها فوراً في الـ LocalStorage الخاص بالجانب الحالي
-  // -------------------------------------------------------------
-    // ✅ الشكل الصحيح والدقيق للـ Event:
   const handleWishSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -453,7 +430,6 @@ export default function App(): React.JSX.Element {
         : ['#2b2b2b', '#d4af37'],
     });
   };
-  
 
   const googleCalendarUrl =
     `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
@@ -464,12 +440,15 @@ export default function App(): React.JSX.Element {
       'Nile Hall, Nile Corniche, Imbaba, Giza'
     )}`;
 
-  const galleryItems = [
-    { img: img4, caption: 'Where our hearts connected...' },
-    { img: img2, caption: 'Precious Childhood Memories' },
-    { img: img3, caption: 'Growing up together in love' },
-    { img: img1, caption: 'Our Forever Chapter' },
-  ];
+  const galleryItems = useMemo(
+    () => [
+      { img: img4, caption: 'Where our hearts connected...' },
+      { img: img2, caption: 'Precious Childhood Memories' },
+      { img: img3, caption: 'Growing up together in love' },
+      { img: img1, caption: 'Our Forever Chapter' },
+    ],
+    []
+  );
 
   return (
     <div
@@ -655,7 +634,144 @@ export default function App(): React.JSX.Element {
               <div className="max-w-4xl mx-auto px-4">
                 <FadeInSection direction="down">
                   <span
-                              {/* RSVP - تأكيد الحضور */}
+                    className="uppercase text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.3em] font-bold block mb-2"
+                    style={{ color: isBride ? '#d87093' : '#d4af37' }}
+                  >
+                    Counting Down To The Big Day
+                  </span>
+                  <h3 className="text-2xl sm:text-4xl font-serif text-gray-900 mb-8 sm:mb-12">
+                    Until We Say Forever
+                  </h3>
+                </FadeInSection>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+                  {[
+                    { label: 'Days', value: timeLeft.days },
+                    { label: 'Hours', value: timeLeft.hours },
+                    { label: 'Minutes', value: timeLeft.minutes },
+          { label: 'Seconds', value: ** timeLeft.seconds },
+                  ].map((item, index) => (
+                    <FadeInSection key={index} direction="scale" delay={index * 100}>
+                      <div
+                        className="p-4 sm:p-6 rounded-2xl shadow-lg border text-center"
+                        style={{
+                          backgroundColor: theme.cardBg,
+                          borderColor: isBride
+                            ? 'rgba(255,182,193,0.3)'
+                            : 'rgba(212,175,55,0.3)',
+                        }}
+                      >
+                        <span
+                          className="block text-3xl sm:text-5xl font-bold font-serif mb-1"
+                          style={{ color: isBride ? '#d87093' : '#d4af37' }}
+                        >
+                          {String(item.value).padStart(2, '0')}
+                        </span>
+                        <span className="text-xs sm:text-sm text-gray-500 uppercase tracking-widest font-medium">
+                          {item.label}
+                        </span>
+                      </div>
+                    </FadeInSection>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </FadeInSection>
+
+          {/* INVITATION DETAILS */}
+          <FadeInSection direction="up">
+            <section
+              id="invitation"
+              className="py-12 sm:py-20 text-center"
+              style={{ backgroundColor: theme.bgSection }}
+            >
+              <div className="max-w-3xl mx-auto px-4">
+                <LuxuryGoldCard>
+                  <div className="space-y-6">
+                    <span
+                      className="uppercase text-xs tracking-[0.3em] font-bold block"
+                      style={{ color: isBride ? '#d87093' : '#d4af37' }}
+                    >
+                      You are Cordially Invited
+                    </span>
+
+                    <h2 className="text-3xl sm:text-5xl font-serif text-gray-900">
+                      Join Our Celebration
+                    </h2>
+
+                    <p className="text-gray-600 leading-relaxed text-sm sm:text-base font-light italic">
+                      "Love fills the moment, and the moment fills a lifetime. We request the pleasure of your company as we exchange our engagement rings."
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                      <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center gap-3">
+                        <CalendarIcon className="w-6 h-6 text-amber-600" />
+                        <div className="text-left">
+                          <span className="block text-xs text-gray-400 uppercase font-medium">Date & Time</span>
+                          <span className="text-sm font-bold text-gray-800">Sept 30, 2026 @ 7:00 PM</span>
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center gap-3">
+                        <Shirt className="w-6 h-6 text-pink-600" />
+                        <div className="text-left">
+                          <span className="block text-xs text-gray-400 uppercase font-medium">Dress Code</span>
+                          <span className="text-sm font-bold text-gray-800">Formal / Evening Wear</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <a
+                        href={googleCalendarUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-white shadow-lg hover:opacity-90 transition"
+                        style={{ backgroundColor: isBride ? '#d87093' : '#2b2b2b' }}
+                      >
+                        <CalendarIcon className="w-4 h-4" /> Add to Google Calendar
+                      </a>
+                    </div>
+                  </div>
+                </LuxuryGoldCard>
+              </div>
+            </section>
+          </FadeInSection>
+
+          {/* LOCATION */}
+          <FadeInSection direction="up">
+            <section id="location" className="py-12 sm:py-20 bg-white">
+              <div className="max-w-4xl mx-auto px-4 text-center">
+                <div
+                  className="flex items-center justify-center gap-2 mb-2"
+                  style={{ color: isBride ? '#d87093' : '#d4af37' }}
+                >
+                  <MapPin className="w-6 h-6" />
+                  <h3 className="text-2xl sm:text-4xl font-serif text-gray-900">
+                    The Venue
+                  </h3>
+                </div>
+
+                <p className="text-gray-500 mb-8 text-sm">
+                  Nile Hall, Nile Corniche, Imbaba, Giza
+                </p>
+
+                <div className="rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
+                  <iframe
+                    title="Nile Hall Location"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3452.3664082264635!2d31.2091!3d30.0833!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145841029140d3a7%3A0x7d013f99d91f1a0!2sNile%20Hall!5e0!3m2!1sen!2seg!4v1700000000000!5m2!1sen!2seg"
+                    width="100%"
+                    height="380"
+                    style={{ border: 0 }}
+                    allowFullScreen={false}
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </section>
+          </FadeInSection>
+
+          {/* RSVP - تأكيد الحضور */}
           <FadeInSection direction="up">
             <section
               id="rsvp"
@@ -714,7 +830,7 @@ export default function App(): React.JSX.Element {
                     });
 
                     const newWindow = window.open(waUrl, '_blank');
-                    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
                       window.location.href = waUrl;
                     }
 
@@ -924,7 +1040,7 @@ export default function App(): React.JSX.Element {
             </section>
           </FadeInSection>
 
-          {/* FOOTER - الفوتر السخلي */}
+          {/* FOOTER - الفوتر السفلي */}
           <footer
             id="footer"
             className="py-6 text-center border-t transition-colors duration-500"
@@ -976,7 +1092,7 @@ export default function App(): React.JSX.Element {
                   <span style={{ color: isBride ? '#d87093' : '#d4af37' }}>
                     Nada
                   </span>
-                </h2>
+                   </h2>
               </div>
 
               <p className="text-xs sm:text-sm italic font-light max-w-md mx-auto leading-relaxed opacity-90 px-4">
@@ -989,3 +1105,5 @@ export default function App(): React.JSX.Element {
     </div>
   );
 }
+            
+               
