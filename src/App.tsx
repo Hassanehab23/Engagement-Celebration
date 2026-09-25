@@ -1099,11 +1099,12 @@ export default function App(): React.JSX.Element {
                 "We can't wait to share this magical night and create unforgettable memories with the people we love most."
               </p>
             </div>
-          </footer>
+            </footer>
         </>
       )}
     </div>
   );
 }
+
             
                
