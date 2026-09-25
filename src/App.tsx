@@ -985,7 +985,7 @@ export default function App(): React.JSX.Element {
           </FadeInSection>
 
  
-                        {/* GALLERY - معرض الصور */}
+                               {/* GALLERY - معرض الصور */}
           <FadeInSection direction="up">
             <section id="gallery" className="py-12 sm:py-20 bg-white">
               <div className="max-w-6xl mx-auto px-4 text-center">
@@ -1004,44 +1004,46 @@ export default function App(): React.JSX.Element {
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-                  {galleryItems.map((item, index) => (
-                    <FadeInSection key={index} direction="scale" delay={index * 100}>
-                      <div
-                        className="p-3 rounded-3xl shadow-xl border group overflow-hidden h-full flex flex-col justify-between"
-                        style={{
-                          backgroundColor: theme.cardBg,
-                          borderColor: isBride
-                            ? "rgba(255,182,193,0.3)"
-                            : "rgba(212,175,55,0.3)",
-                        }}
-                      >
+                  {galleryItems.map((item, index) => {
+                    const isLast = index === galleryItems.length - 1;
+                    return (
+                      <FadeInSection key={index} direction="scale" delay={index * 100}>
                         <div
-                          className={`overflow-hidden rounded-2xl mb-3 ${
-                            index === galleryItems.length - 1 ? "aspect-3/4" : ""
-                          }`}
+                          className="p-3 rounded-3xl shadow-xl border group overflow-hidden h-full flex flex-col justify-between"
+                          style={{
+                            backgroundColor: theme.cardBg,
+                            borderColor: isBride
+                              ? "rgba(255,182,193,0.3)"
+                              : "rgba(212,175,55,0.3)",
+                          }}
                         >
-                          <img
-                            src={item.img}
-                            alt={item.caption}
-                            loading="lazy"
-                            className={`w-full rounded-2xl group-hover:scale-105 transition duration-700 ${
-                              index === galleryItems.length - 1
-                                ? "h-full object-cover"
-                                : "h-auto object-contain"
-                            }`}
-                          />
-                        </div>
+                          <div className={`overflow-hidden rounded-2xl mb-3 ${isLast ? "aspect-3/4" : ""}`}>
+                            <img
+                              src={item.img}
+                              alt={item.caption}
+                              loading="lazy"
+                              className={
+                                "w-full rounded-2xl group-hover:scale-105 transition duration-700 " +
+                                (isLast ? "h-full object-cover" : "h-auto object-contain")
+                              }
+                            />
+                          </div>
 
-                        <p className="text-gray-700 font-serif text-sm pb-2 font-medium">
-                          {item.caption}
-                        </p>
-                      </div>
-                    </FadeInSection>
-                  ))}
+                          <p className="text-gray-700 font-serif text-sm pb-2 font-medium">
+                            {item.caption}
+                          </p>
+                        </div>
+                      </FadeInSection>
+                    );
+                  })}
                 </div>
               </div>
             </section>
           </FadeInSection>
+ 
+                    
+                        
+          
                     {/* FOOTER - الفوتر السفلي */}
           <footer
             id="footer"
