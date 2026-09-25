@@ -984,7 +984,8 @@ export default function App(): React.JSX.Element {
             </section>
           </FadeInSection>
 
-                    {/* GALLERY - معرض الصور */}
+ 
+                        {/* GALLERY - معرض الصور */}
           <FadeInSection direction="up">
             <section id="gallery" className="py-12 sm:py-20 bg-white">
               <div className="max-w-6xl mx-auto px-4 text-center">
@@ -1041,7 +1042,7 @@ export default function App(): React.JSX.Element {
               </div>
             </section>
           </FadeInSection>
-          
+                    {/* FOOTER - الفوتر السفلي */}
           <footer
             id="footer"
             className="py-6 text-center border-t transition-colors duration-500"
@@ -1089,7 +1090,7 @@ export default function App(): React.JSX.Element {
                   <span style={{ color: isBride ? '#d87093' : '#d4af37' }}>
                     Mohamed
                   </span>
-                  {' & '}
+                  {" & "}
                   <span style={{ color: isBride ? '#d87093' : '#d4af37' }}>
                     Nada
                   </span>
@@ -1106,3 +1107,6 @@ export default function App(): React.JSX.Element {
     </div>
   );
 }
+
+          
+          
