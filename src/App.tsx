@@ -703,6 +703,7 @@ export default function App(): React.JSX.Element {
                       "Love fills the moment, and the moment fills a lifetime. We request the pleasure of your company as we exchange our engagement rings."
                     </p>
 
+                    {/* DRESS CODE & DATE CONTAINER */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                       <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center gap-3">
                         <CalendarIcon className="w-6 h-6 text-amber-600" />
@@ -771,7 +772,7 @@ export default function App(): React.JSX.Element {
             </section>
           </FadeInSection>
 
-          {/* RSVP - تأكيد الحضور */}
+          {/* RSVP */}
           <FadeInSection direction="up">
             <section
               id="rsvp"
@@ -883,7 +884,7 @@ export default function App(): React.JSX.Element {
             </section>
           </FadeInSection>
 
-          {/* WISHES - حائط التهاني والأمنيات */}
+          {/* WISHES */}
           <FadeInSection direction="up">
             <section
               id="wishes-wall"
@@ -946,7 +947,6 @@ export default function App(): React.JSX.Element {
                   </form>
                 </div>
 
-                {/* عرض قائمة التهاني */}
                 <div className="grid gap-4">
                   {wishes.length === 0 ? (
                     <p className="text-center text-gray-400 py-6 text-sm">
@@ -982,7 +982,7 @@ export default function App(): React.JSX.Element {
             </section>
           </FadeInSection>
 
-          {/* GALLERY - معرض الصور */}
+          {/* GALLERY */}
           <FadeInSection direction="up">
             <section id="gallery" className="py-12 sm:py-20 bg-white">
               <div className="max-w-6xl mx-auto px-4 text-center">
@@ -1038,7 +1038,7 @@ export default function App(): React.JSX.Element {
             </section>
           </FadeInSection>
 
-          {/* FOOTER - الفوتر السفلي */}
+          {/* FOOTER */}
           <footer
             id="footer"
             className="py-6 text-center border-t transition-colors duration-500"
@@ -1103,3 +1103,5 @@ export default function App(): React.JSX.Element {
     </div>
   );
 }
+
+
