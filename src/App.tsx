@@ -325,6 +325,8 @@ export default function App(): React.JSX.Element {
   const groomAudioUrl = '/Hollela.mp3';
   const brideAudioUrl = '/El Leila.mp3';
 
+  const isBride = guestSide === 'bride'; // (السطر الجديد هنا)
+
   const theme = isBride
     ? {
       bgMain: '#fff8fa',
