@@ -1003,43 +1003,42 @@ export default function App(): React.JSX.Element {
                   Sweet childhood memories and wonderful moments leading to forever.
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-                  {galleryItems.map((item, index) => {
-                    const isLast = index === galleryItems.length - 1;
-                    return (
-                      <FadeInSection key={index} direction="scale" delay={index * 100}>
-                        <div
-                          className="p-3 rounded-3xl shadow-xl border group overflow-hidden h-full flex flex-col justify-between"
-                          style={{
-                            backgroundColor: theme.cardBg,
-                            borderColor: isBride
-                              ? "rgba(255,182,193,0.3)"
-                              : "rgba(212,175,55,0.3)",
-                          }}
-                        >
-                          <div className={`overflow-hidden rounded-2xl mb-3 ${isLast ? "aspect-3/4" : ""}`}>
-                            <img
-                              src={item.img}
-                              alt={item.caption}
-                              loading="lazy"
-                              className={
-                                "w-full rounded-2xl group-hover:scale-105 transition duration-700 " +
-                                (isLast ? "h-full object-cover" : "h-auto object-contain")
-                              }
-                            />
-                          </div>
 
-                          <p className="text-gray-700 font-serif text-sm pb-2 font-medium">
-                            {item.caption}
-                          </p>
-                        </div>
-                      </FadeInSection>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-          </FadeInSection>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+  {galleryItems.map((item, index) => {
+    const isLast = index === galleryItems.length - 1;
+    return (
+      <FadeInSection key={index} direction="scale" delay={index * 100}>
+        <div
+          className="p-3 rounded-3xl shadow-xl border group overflow-hidden h-full flex flex-col justify-between"
+          style={{
+            backgroundColor: theme.cardBg,
+            borderColor: isBride
+              ? "rgba(255,182,193,0.3)"
+              : "rgba(212,175,55,0.3)",
+          }}
+        >
+          <div className={`overflow-hidden rounded-2xl mb-3 ${isLast ? "aspect-3/4" : ""}`}>
+            <img
+              src={item.img}
+              alt={item.caption}
+              loading="lazy"
+              className={
+                "w-full rounded-2xl group-hover:scale-105 transition duration-700 " +
+                (isLast ? "h-full object-cover" : "h-auto object-contain")
+              }
+            />
+          </div>
+
+          <p className="text-gray-700 font-serif text-sm pb-2 font-medium">
+            {item.caption}
+          </p>
+        </div>
+      </FadeInSection>
+    );
+  })}
+</div>
+                  
  
                     
                         
