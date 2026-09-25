@@ -223,7 +223,6 @@ export default function App(): React.JSX.Element {
   const [wishFilter, setWishFilter] = useState<'all' | 'groom' | 'bride'>('all');
   const [wishes, setWishes] = useState<Wish[]>([]);
 
-  // جلب المباركات أونلاين لتظهر كأنها تعليقات حية
   useEffect(() => {
     const fetchWishes = async () => {
       try {
@@ -510,6 +509,8 @@ export default function App(): React.JSX.Element {
                   💍 Wednesday, September 30, 2026 💍
                 </div>
               </div>
+
+              {/* التقويم القديم الأصلي بالكامل */}
               <div className="w-full max-w-xl mx-auto bg-[#1a1412] border border-white/20 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl">
                 <div className="text-center tracking-[0.15em] sm:tracking-[0.3em] uppercase text-[10px] sm:text-sm font-serif text-amber-200 mb-4 sm:mb-5 font-semibold">
                   S E P T E M B E R <span className="hidden sm:inline">&nbsp;&nbsp;&nbsp;</span> 2 0 2 6
@@ -546,6 +547,7 @@ export default function App(): React.JSX.Element {
                   Save the Date
                 </div>
               </div>
+
             </div>
           </HeroSection>
 
