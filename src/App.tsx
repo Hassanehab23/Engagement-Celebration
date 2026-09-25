@@ -274,41 +274,35 @@ export default function App(): React.JSX.Element {
 
   const [wishMessage, setWishMessage] =
     useState<string>('');
-// ✅ الكود الجديد: تحميل التهاني بناءً على الطرف (isBride أم لا)
-const [wishes, setWishes] = useState<Wish[]>([]);
+  // ✅ ضع الكود الجديد ده:
+  // 1. مسح المفتاح القديم الموحد نهائياً
+  useEffect(() => {
+    localStorage.removeItem('wedding_wishes_mohamed_nada');
+  }, []);
 
-// 1. تحميل المباركات عند تغيير Side أو فتح التطبيق
-useEffect(() => {
-  if (!guestSide) return;
+  // 2. حالة المباركات
+  const [wishes, setWishes] = useState<Wish[]>([]);
 
-  const storageKey = isBride
-    ? 'wedding_wishes_bride'
-    : 'wedding_wishes_groom';
+  // 3. قراءة التهاني الخاصة بالطرف المختار (عريس أو عروسة) عند الدخول
+  useEffect(() => {
+    if (!guestSide) return;
 
-  const savedWishes = localStorage.getItem(storageKey);
-  if (savedWishes) {
-    try {
-      setWishes(JSON.parse(savedWishes));
-    } catch (e) {
-      console.error('Error parsing saved wishes', e);
+    const storageKey = isBride
+      ? 'wedding_wishes_bride'
+      : 'wedding_wishes_groom';
+
+    const savedWishes = localStorage.getItem(storageKey);
+    if (savedWishes) {
+      try {
+        setWishes(JSON.parse(savedWishes));
+      } catch (e) {
+        console.error('Error parsing saved wishes', e);
+        setWishes([]);
+      }
+    } else {
       setWishes([]);
     }
-  } else {
-    setWishes([]);
-  }
-}, [guestSide, isBride]);
-
-// 2. حفظ المباركات في المفتاح المناسب عند تعديل القائمة
-useEffect(() => {
-  if (!guestSide) return;
-
-  const storageKey = isBride
-    ? 'wedding_wishes_bride'
-    : 'wedding_wishes_groom';
-
-  localStorage.setItem(storageKey, JSON.stringify(wishes));
-}, [wishes, guestSide, isBride]);
-
+  }, [guestSide, isBride]);
 
   const [timeLeft, setTimeLeft] =
     useState<TimeLeft>({
@@ -538,17 +532,11 @@ useEffect(() => {
       );
     }, 1500);
   };
-
-  const handleWishSubmit = (
-    e: React.FormEvent
-  ) => {
+  // ✅ ضع الدالة الجديدة دي:
+  const handleWishSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (
-      !wishName.trim() ||
-      !wishMessage.trim()
-    )
-      return;
+    if (!wishName.trim() || !wishMessage.trim()) return;
 
     const newWish: Wish = {
       name: wishName,
@@ -556,10 +544,15 @@ useEffect(() => {
       date: 'Just now',
     };
 
-    setWishes([
-      newWish,
-      ...wishes,
-    ]);
+    const updatedWishes = [newWish, ...wishes];
+    setWishes(updatedWishes);
+
+    // الحفظ الفوري في المفتاح الخاص بالطرف المختار (عريس أو عروسة)
+    const storageKey = isBride
+      ? 'wedding_wishes_bride'
+      : 'wedding_wishes_groom';
+
+    localStorage.setItem(storageKey, JSON.stringify(updatedWishes));
 
     setWishName('');
     setWishMessage('');
@@ -567,14 +560,13 @@ useEffect(() => {
     confetti({
       particleCount: 100,
       spread: 90,
-      origin: {
-        y: 0.7,
-      },
+      origin: { y: 0.7 },
       colors: isBride
         ? ['#ff69b4', '#d4af37']
         : ['#2b2b2b', '#d4af37'],
     });
   };
+  
 
   const googleCalendarUrl =
     `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
