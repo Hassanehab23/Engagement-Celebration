@@ -45,7 +45,7 @@ const autoScrollSectionIds = [
   'footer',
 ];
 
-const HeroSection = styled.div<{ isBride: boolean }>`
+const HeroSection = styled.div<{ isBride: boolean,id?:string }>`
   background:
     linear-gradient(
       rgba(45, 10, 25, 0.75),
@@ -53,7 +53,6 @@ const HeroSection = styled.div<{ isBride: boolean }>`
     ),
     url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80')
       center / cover no-repeat;
-
   min-height: 100svh;
   width: 100%;
   display: flex;
@@ -421,7 +420,8 @@ export default function App(): React.JSX.Element {
   // -------------------------------------------------------------
   // 2️⃣ إرسال التهنئة وحفظها فوراً في الـ LocalStorage الخاص بالجانب الحالي
   // -------------------------------------------------------------
-  const handleWishSubmit = (e: React.FormEvent) => {
+    // ✅ الشكل الصحيح والدقيق للـ Event:
+  const handleWishSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!wishName.trim() || !wishMessage.trim()) return;
@@ -432,11 +432,9 @@ export default function App(): React.JSX.Element {
       date: 'Just now',
     };
 
-    // تحديث القائمة المحلية
     const updatedWishes = [newWish, ...wishes];
     setWishes(updatedWishes);
 
-    // تحديد المفتاح الخاص بالطرف المختار (عريس / عروسة) وتخزين البيانات فوراً
     const storageKey = isBride
       ? 'wedding_wishes_bride'
       : 'wedding_wishes_groom';
@@ -450,9 +448,12 @@ export default function App(): React.JSX.Element {
       particleCount: 100,
       spread: 90,
       origin: { y: 0.7 },
-      colors: isBride ? ['#ff69b4', '#d4af37'] : ['#2b2b2b', '#d4af37'],
+      colors: isBride
+        ? ['#ff69b4', '#d4af37']
+        : ['#2b2b2b', '#d4af37'],
     });
   };
+  
 
   const googleCalendarUrl =
     `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
