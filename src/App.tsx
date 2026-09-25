@@ -274,32 +274,41 @@ export default function App(): React.JSX.Element {
 
   const [wishMessage, setWishMessage] =
     useState<string>('');
+// ✅ الكود الجديد: تحميل التهاني بناءً على الطرف (isBride أم لا)
+const [wishes, setWishes] = useState<Wish[]>([]);
 
-  const [wishes, setWishes] = useState<Wish[]>(() => {
-    const savedWishes = localStorage.getItem(
-      'wedding_wishes_mohamed_nada'
-    );
+// 1. تحميل المباركات عند تغيير Side أو فتح التطبيق
+useEffect(() => {
+  if (!guestSide) return;
 
-    if (savedWishes) {
-      try {
-        return JSON.parse(savedWishes);
-      } catch (e) {
-        console.error(
-          'Error parsing saved wishes',
-          e
-        );
-      }
+  const storageKey = isBride
+    ? 'wedding_wishes_bride'
+    : 'wedding_wishes_groom';
+
+  const savedWishes = localStorage.getItem(storageKey);
+  if (savedWishes) {
+    try {
+      setWishes(JSON.parse(savedWishes));
+    } catch (e) {
+      console.error('Error parsing saved wishes', e);
+      setWishes([]);
     }
+  } else {
+    setWishes([]);
+  }
+}, [guestSide, isBride]);
 
-    return [];
-  });
+// 2. حفظ المباركات في المفتاح المناسب عند تعديل القائمة
+useEffect(() => {
+  if (!guestSide) return;
 
-  useEffect(() => {
-    localStorage.setItem(
-      'wedding_wishes_mohamed_nada',
-      JSON.stringify(wishes)
-    );
-  }, [wishes]);
+  const storageKey = isBride
+    ? 'wedding_wishes_bride'
+    : 'wedding_wishes_groom';
+
+  localStorage.setItem(storageKey, JSON.stringify(wishes));
+}, [wishes, guestSide, isBride]);
+
 
   const [timeLeft, setTimeLeft] =
     useState<TimeLeft>({
